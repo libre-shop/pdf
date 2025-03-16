@@ -64,7 +64,6 @@ pdf_generation_counter = metrics.counter(
 
 class Template(Enum):
 	INVOICE = "/app/data/templates/invoice-scrlttr2.tex"
-	INVOICE_EXAMPLE = "/app/data/templates/invoice-scrlttr2.example.tex"
 	SHIPPING = "/app/data/templates/shipping-note-scrlttr2.tex"
 	ORDER_CONFIRMATION = "/app/data/templates/order-confirmation.tex"
 	LETTERHEAD = "/app/data/templates/RE.pdf"
