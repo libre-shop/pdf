@@ -1,0 +1,145 @@
+\documentclass[
+    fontsize=10pt,
+    parskip=full,
+    paper=A4,
+    fromalign=off,
+    fromphone=false,
+    fromfax=false,
+    fromemail=false,
+    fromurl=false,
+    foldmarks=true,
+    version=last,
+    refline=wide
+]{scrlttr2}
+
+% Layout
+\usepackage{geometry}
+\geometry{a4paper, left=20mm, right=0mm, top=20mm, bottom=17mm}
+
+% Typography
+\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
+\usepackage{eurosym}
+\usepackage[hidelinks]{hyperref}
+
+\defaultfontfeatures{Mapping=tex-text}
+\setsansfont[Scale=0.9]{Noto Sans Regular}
+\setmainfont[SmallCapsFeatures={LetterSpace=5,Letters=SmallCaps}]{Noto Sans Regular}
+
+% Language
+\usepackage[ngerman]{babel}
+
+% Table Customization
+\usepackage{spreadtab}
+\usepackage{arydshln}
+\usepackage{hhline}
+\usepackage{enumitem}
+\renewcommand{\arraystretch}{1.5} % Apply vertical padding to table cells
+% \usepackage[table]{xcolor}
+% \definecolor{gr}{rgb}{0.95,0.95,1}
+
+% Letterhead
+$if(letterhead)$
+    \usepackage{wallpaper}
+    \ULCornerWallPaper{1}{$letterhead$}
+$endif$
+
+% \setplength{refwidth}{10cm}
+% \setplength{refhpos}{0pt}
+\setplength{locwidth}{6cm}
+\setplength{locvpos}{6cm}
+
+% \showfields{test}
+\begin{document}
+
+\date{}
+\setkomavar{subject}[left]{\LARGE \textit{\textcolor{red}{$subject$}}}
+
+% Additional Information
+\setkomavar{location}{\raggedright
+    $if(nr.invoice)$
+        \small\textit{\textbf{RECHNUNG Nr.} $nr.invoice$}\\
+        \scriptsize\textit{(Bitte bei Bezahlungen stets angeben)}
+    $endif$
+
+    $if(nr.shipping)$
+        \small \textit{\textbf{LIEFERSCHEIN Nr.} $nr.shipping$}\\
+    $endif$
+
+    $if(nr.customer)$
+        \small \textit{Kundennummer: $nr.customer$}\\
+    $endif$
+
+    $if(nr.order)$
+        \small \textit{Bestellnummer: $nr.order$}\\
+    $endif$
+
+    $if(date)$
+        \small \textit{Datum: $date$}
+    $endif$
+}
+
+% Letter
+\begin{letter}{
+    \scriptsize{\textcolor{red}{Rechnungsadresse:}} \\
+
+    $if(to.name)$
+        $to.name$\\
+    $endif$
+
+    $if(to.address)$
+        $for(to.address)$
+            $to.address$\\
+        $endfor$
+    $endif$
+}
+
+\opening{}
+
+% Table
+% \footnotesize
+\newcounter{pos}
+\setcounter{pos}{0}
+\STautoround*{2}
+\STsetdecimalsep{,}
+
+\begin{spreadtab}{{tabular}[t t t t t t t]{lp{7.6cm}rrrr}}
+  \hdashline[1pt/1pt]
+%   \rowcolor{red}
+%   \rowcolor{gray!25}
+%   \rowcolor{gr}
+  @ \textbf{Pos.} & @ \textbf{Artikel} & @ \textbf{Art-Nr.} & @ \textbf{Menge} & @ \textbf{Einzelpreis} & @ \textbf{Gesamt} \\
+  \hline
+  $for(service)$
+    @ \refstepcounter{pos} \thepos &
+    @ $service.description$ &
+    @ $service.nr$ &
+    @ $service.count$ &
+    :={$service.price.per_unit$} $currency$ &
+    :={$service.price.total$} $currency$ \\
+    \hline
+  $endfor$
+  @ \noalign{\vskip 1.2cm} & @ & @ & @ & @ & @\\
+  $if(subtotal)$
+    @ & @ & @ \multicolumn{3}{l}{\textbf{Zwischensumme:}} & :={$subtotal$} $currency$ \\
+  $endif$
+  $if(shipping)$
+    @ & @ & @ \multicolumn{3}{l}{\textbf{Versandkosten:}} & :={$shipping$} $currency$ \\
+  $endif$
+  $if(VAT)$
+    @ & @ & @ \multicolumn{3}{l}{\textbf{USt. $VAT.rate$\%}} & :={$VAT.amount$} $currency$ \\
+    \noalign{\vskip 2mm} \hhline{~~----}
+  $endif$
+  \noalign{\vskip 2mm} & @ & @ \multicolumn{3}{l}{\textbf{Gesamtbetrag:}} & \textbf{:={$total$} $currency$} \\
+  \noalign{\vskip 2mm}\hhline{~~----}
+\end{spreadtab}
+\vspace{15mm}
+
+% \useplength{toaddrhpos}
+% \useplength{refvpos}
+% Body
+$body$
+
+% Closing
+\end{letter}
+\end{document}
